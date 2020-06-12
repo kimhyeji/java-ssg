@@ -1,0 +1,161 @@
+body,html{
+    height: 100%;
+    background-color: #1C1B26;
+}
+body, ul, li {
+    margin:0;
+    padding:0;
+    list-style: none;
+}
+a { 
+    color:inherit;
+    text-decoration: none;
+}
+.con {
+    background-color: #F9CDCD;
+    height:10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-around;
+    
+}
+.type {
+    height: 100%;
+    color:#F9CDCD;
+    font-size:7rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: 5px;
+    transition: 1s;
+}
+.type > a:hover{
+    transition: 1s;
+    color:#CEBDFF;
+}
+/* 메뉴박스 */
+.menu-bar {
+    font-size: 1.5rem;
+    color:#1C1B26;
+    cursor: pointer;
+     transition: 0.5s;
+}
+.menu-bar:hover {
+    color:#CEBDFF;
+    transition: 0.5s;
+}
+
+/* 로고 */
+.logo {
+    font-size: 3rem;
+    color:#1C1B26;
+    cursor: pointer;
+    transition: 0.5s;
+}
+.logo:hover{
+    color:#CEBDFF;
+    transition: 0.5s;
+}
+
+/* 메뉴 */
+.con > .menu-box-1 {
+    display: flex;
+    justify-content: space-between;
+    width: 500px;
+    padding:15px 0;
+    
+}
+.con > .menu-box-1 > li {
+    display: flex;
+    padding:32px 0;
+    margin:0 -30;
+}
+.con > .menu-box-1 > li > a{
+    font-weight: bold;
+    transition: 0.5s;
+}
+.con > .menu-box-1  li:hover > a{
+    transition: 0.5s;
+    color:#CEBDFF;
+}
+
+/* 호버 기능 */
+.con > .menu-box-1 ul {
+    display: none;
+}
+.con > .menu-box-1 ul {
+    background-color: #F9CDCD;
+    transition: 1s;
+}
+.con > .menu-box-1  > li {
+    position: relative;
+}
+
+.con > .menu-box-1 li > ul {
+    position: absolute;
+    display:none;
+    top:100%;
+    left:-100%;
+    width:300%;
+   }
+.con > .menu-box-1 li > ul > li {
+    padding:8px 0;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+.con > .menu-box-1 li > ul > li > a{
+    font-weight: bold;
+   }
+.con > .menu-box-1 li:hover > ul {
+    display: block;
+    
+}
+/* 호버 기능 */
+
+.table-bar{
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+}
+table {
+    color: white;
+    height: 20%;
+    width: 50%;
+    text-align: center;
+    
+}
+table > thead > tr{
+    cursor: pointer;
+}
+
+table > thead > tr > th {
+    font-size: 1.2rem;
+    padding: 15px 0;
+    color: #F9CDCD;
+    background-color:#292640;
+    transition: 0.5s;   
+}
+table > thead > tr > th:hover {
+    color:white;
+    transition: 0.5s;
+}
+table > tbody > tr > td{
+    padding: 15px 0;
+    transition: 0.5s;
+}
+
+table > tbody > tr > td:hover{
+    color:#F9CDCD;
+    transition: 0.5s;
+}
+h1{
+    position: absolute;
+    color: white;
+    left:50%;
+    top:30%;
+    transform: translateX(-50%);
+}
