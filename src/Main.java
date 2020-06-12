@@ -1,5 +1,5 @@
-// 화이팅!!
-// 넵!! 화이팅!!!
+//조재원 메세지
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
