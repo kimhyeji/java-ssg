@@ -1,5 +1,3 @@
-//조재원 메세지: 안녕 조장 그래 안녕
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -290,7 +288,7 @@ class BuildController extends Controller {
 	BuildController() {
 		buildService = Factory.getBuildService();
 	}
-	
+
 	static {
 		workStarted = false;
 	}
@@ -304,21 +302,21 @@ class BuildController extends Controller {
 			actionStopAutoSite(reqeust);
 		}
 	}
-	
+
 	// build site start
-		private void actionStartAutoSite(Request reqeust) {
-			workStarted = true;
-			new Thread(() -> {
-				while (workStarted) {
-					buildService.buildSite();
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-					}
+	private void actionStartAutoSite(Request reqeust) {
+		workStarted = true;
+		new Thread(() -> {
+			while (workStarted) {
+				buildService.buildSite();
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
 				}
-			}).start();
-		}
-	
+			}
+		}).start();
+	}
+
 	// build site stop
 	private void actionStopAutoSite(Request reqeust) {
 		try {
@@ -327,8 +325,6 @@ class BuildController extends Controller {
 		}
 		workStarted = false;
 	}
-	
-	
 
 	private void actionSite(Request reqeust) {
 		buildService.buildSite();
@@ -777,26 +773,32 @@ class BuildService {
 	}
 
 	public void buildSite() {
-		Util.makeDir("site/");
-		Util.makeDir("site/site_template/");
-		Util.makeDir("site/site_template/article"); // list, detail
-		Util.makeDir("site/site_template/home"); // 메인 페이지
-		Util.makeDir("site/site_template/part"); // 공통 상단, 하단 템플릿
-		Util.makeDir("site/site_template/resource"); // 공통 css, js
-		Util.makeDir("site/site_template/stat"); // 통계 페이지
+		Util.makeDir("site");
+		Util.makeDir("site/article");
+		Util.makeDir("site/resource");
+		Util.makeDir("site/home");
 
+		String head = Util.getFileContents("site_template/part/head.html");
+		String foot = Util.getFileContents("site_template/part/foot.html");
 		
+		String commonCss = Util.getFileContents("site_template/resource/common.css");
+		Util.writeFileContents("site/resource/common.css", commonCss);
 		
-		// part - head, foot.html
-		String head = Util.getFileContents("site/site_template/part/head.html");
-		String foot = Util.getFileContents("site/site_template/part/foot.html");
+		String mainIndex = Util.getFileContents("site_template/home/index.html");
+		Util.writeFileContents("site/home/index.html", mainIndex);
+		
+		String mainIndex2 = Util.getFileContents("site_template/home/index2.html");
+		Util.writeFileContents("site/home/index2.html", mainIndex2);
+		
+		String mainIndexCss = Util.getFileContents("site_template/home/index.css");
+		Util.writeFileContents("site/home/index.css", mainIndexCss);
 		
 		List<Board> boards = articleService.getAllBoard();
-		
-		for(Board board : boards) {
+
+		for (Board board : boards) {
+
 			head = head.replace("{$boardMenu}", board.getCode() + "-list-1.html");
 		}
-		
 
 		// article - 각 게시판 별 게시물리스트 페이지 생성 / notice, free..
 
@@ -808,13 +810,14 @@ class BuildService {
 			List<Article> articles = articleService.getArticlesByBoardCode(board.getCode());
 
 			for (Article article : articles) {
+				html += "<link rel=\"stylesheet\" href=\"listTable.css\" />";
 				html += "<div><a href=\"" + article.getId() + ".html\">게시물 번호 : " + article.getId() + ", 게시물 제목 : "
 						+ article.getTitle() + "</a></div>";
 			}
 
 			html = head + html + foot;
 
-			Util.writeFileContents("site/site_template/article/" + fileName, html);
+			Util.writeFileContents("site/article/" + fileName, html);
 		}
 
 		// article - 게시물 별 파일 생성 / 1.html,2.html..
@@ -822,8 +825,8 @@ class BuildService {
 
 		for (Article article : articles) {
 			String html = "";
-			
-			html += "<link rel=\"stylesheet\" href=\"../resource/common.css\" />";
+
+			html += "<link rel=\"stylesheet\" href=\"listTable.css\" />";
 			html += "<div>제목 : " + article.getTitle() + "</div>";
 			html += "<div>내용 : " + article.getBody() + "</div>";
 			html += "<div><a href=\"" + (article.getId() - 1) + ".html\">이전글</a></div>";
@@ -831,10 +834,9 @@ class BuildService {
 
 			html = head + html + foot;
 
-			Util.writeFileContents("site/site_template/article/" + article.getId() + ".html", html);
+			Util.writeFileContents("site/article/" + article.getId() + ".html", html);
 		}
-		
-		
+
 	}
 
 }
@@ -1136,27 +1138,20 @@ class DB {
 	public void getArticleBoard(int id) {
 		List<Article> articles = getArticles();
 
-		
 		for (Article article : articles) {
 			if (article.getBoardId() == id) {
 				System.out.println(article);
 			}
 		}
-		
+
 		/*
-		// num을 기준으로 출력
-		if (articles != null) {
-			System.out.println("번호 | 제목 | 작성 날짜 | 작성자");
-			for (int i = (id - 1) * 10; i < id * 10; i++) {
-				if (i >= articles.size()) {
-					break;
-				}
-				Article a = articles.get(i);
-				System.out.printf("%02d | %s | %s | %s\n", a.getId(), a.getTitle(), a.getRegDate(), getMember(a.getMemberId()).getName());
-			}
-		} else {
-			System.out.println("게시물이 존재하지 않습니다.");
-		}*/
+		 * // num을 기준으로 출력 if (articles != null) {
+		 * System.out.println("번호 | 제목 | 작성 날짜 | 작성자"); for (int i = (id - 1) * 10; i <
+		 * id * 10; i++) { if (i >= articles.size()) { break; } Article a =
+		 * articles.get(i); System.out.printf("%02d | %s | %s | %s\n", a.getId(),
+		 * a.getTitle(), a.getRegDate(), getMember(a.getMemberId()).getName()); } } else
+		 * { System.out.println("게시물이 존재하지 않습니다."); }
+		 */
 
 	}
 
@@ -1441,7 +1436,8 @@ class Article extends Dto {
 
 	@Override
 	public String toString() {
-		return String.format("== Article List ==\n게시물 번호 : %d\n제목 : %s\n작성날짜 : %s\n작성자 번호 : %d\n", getId(), title, getRegDate(), getMemberId());
+		return String.format("== Article List ==\n게시물 번호 : %d\n제목 : %s\n작성날짜 : %s\n작성자 번호 : %d\n", getId(), title,
+				getRegDate(), getMemberId());
 	}
 
 	public int getBoardId() {
