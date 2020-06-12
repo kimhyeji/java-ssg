@@ -1,4 +1,4 @@
-//조재원 메세지: 안녕 조장 그래 안녕하니?
+//조재원 메세지: 안녕 조장 그래 안녕
 
 import java.io.BufferedOutputStream;
 import java.io.File;
