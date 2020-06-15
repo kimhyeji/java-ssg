@@ -1,0 +1,45 @@
+html {
+    height: 100%;
+  }
+  body {
+    background-color: #1c1b26;
+    height: 100%;
+  }
+  
+  /* 노말라이즈 */
+  body,
+  ul,
+  li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  /* Welcome */
+  .first {
+    position: relative;
+    height: 100%;
+    border: 1px solid;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .first > .item {
+    color: #cebdff;
+  }
+  .first > div > a {
+    font-size: 6rem;
+    font-weight: bold;
+    letter-spacing: -5px;
+    transition: 0.5s;
+  }
+  .first > div:hover > a {
+    transition: 0.5s;
+    color: #f18482;
+  }
+  

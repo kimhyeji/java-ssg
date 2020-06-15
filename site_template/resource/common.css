@@ -11,6 +11,7 @@ a {
     color:inherit;
     text-decoration: none;
 }
+
 .con {
     background-color: #F9CDCD;
     height:10%;
@@ -18,6 +19,8 @@ a {
     justify-content: center;
     align-items: center;
     justify-content: space-around;
+    position: fixed;
+    width: 100%;
     
 }
 .type {
@@ -31,8 +34,22 @@ a {
     letter-spacing: 5px;
     transition: 1s;
 }
-.type > a:hover{
-    transition: 1s;
+
+.type, .type:focus { animation-duration: 3s; animation-name: rainbowLink; animation-iteration-count: infinite; } 
+@keyframes rainbowLink {     
+ 0% { color: #ff2a2a; }
+ 15% { color: #ff7a2a; }
+ 30% { color: #ffc52a; }
+ 45% { color: #43ff2a; }
+ 60% { color: #2a89ff; }
+ 75% { color: #202082; }
+ 90% { color: #6b2aff; } 
+ 100% { color: #e82aff; }
+ 
+}
+.type{
+    text-shadow: 0 0 0.1em, 0 0 0.1em;   
+    
     color:#CEBDFF;
 }
 /* 메뉴박스 */
@@ -41,21 +58,42 @@ a {
     color:#1C1B26;
     cursor: pointer;
      transition: 0.5s;
+     
 }
-.menu-bar:hover {
-    color:#CEBDFF;
+.menu-bar > .butten:hover {
+    color:#996ECC;
     transition: 0.5s;
 }
-
+.menu-bar{
+    position: relative;
+}
+.menu-bar > .side-bar  {
+    position: absolute;
+    top:-300px;
+    right: -1500%;
+    width: 250px;
+    height: 500px;
+    background-color: #CEBDFd;
+    transition: 1s;
+}
+.menu-bar:hover > .side-bar{
+    position: absolute;
+    top: -30px;
+    right: -300%;
+    width: 250px;
+    height: 500px;
+    
+    transition: 1s;
+}
 /* 로고 */
 .logo {
     font-size: 3rem;
-    color:#1C1B26;
+    color:#292640;
     cursor: pointer;
     transition: 0.5s;
 }
 .logo:hover{
-    color:#CEBDFF;
+    color:#996ECC;
     transition: 0.5s;
 }
 
@@ -68,38 +106,83 @@ a {
     
 }
 .con > .menu-box-1 > li {
+    color:292640;
     display: flex;
-    padding:32px 0;
+    padding:36px 0;
     margin:0 -30;
+    
 }
+
 .con > .menu-box-1 > li > a{
     font-weight: bold;
     transition: 0.5s;
+
 }
 .con > .menu-box-1  li:hover > a{
     transition: 0.5s;
-    color:#CEBDFF;
+    color:#996ECC;
+    
+}
+.con > .menu-box-1  li > a {
+    position: relative;
+    
+}
+
+.con > .menu-box-1  li > a::after{
+    
+    content: "";
+    clear: both;
+    background-color: #704b9e ;
+    position: absolute;
+    top: 110%;
+    left: 0%;
+    z-index: 1;
+    width: 0%;
+    height: 2px;
+    transition: all 0.5s;
+}
+.con > .menu-box-1  li:hover > a::after{ 
+    content: "";
+    clear: both;
+    position: absolute;
+    top: 110%;
+    left: 0%;
+    z-index: 1;
+    width: 100%;
+    height: 2px;
+    transition: all 0.5s;
 }
 
 /* 호버 기능 */
 .con > .menu-box-1 ul {
-    display: none;
-}
-.con > .menu-box-1 ul {
     background-color: #F9CDCD;
     transition: 1s;
+    
 }
 .con > .menu-box-1  > li {
     position: relative;
 }
 
 .con > .menu-box-1 li > ul {
-    position: absolute;
-    display:none;
+    position: absolute;    
     top:100%;
-    left:-100%;
-    width:300%;
-   }
+    left:-110%;
+    width:320%;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 0.5s, visibility 0.5s;
+}
+.con > .menu-box-1 li:nth-child(2) > ul{
+    top:100%;
+    left:-40%;
+    width:180%;
+}
+
+.con > .menu-box-1 li:hover > ul {
+    opacity:1;
+    visibility:visible;
+    
+}
 .con > .menu-box-1 li > ul > li {
     padding:8px 0;
     padding-bottom: 10px;
@@ -108,11 +191,11 @@ a {
 
 .con > .menu-box-1 li > ul > li > a{
     font-weight: bold;
-   }
-.con > .menu-box-1 li:hover > ul {
     display: block;
-    
-}
+    padding:8px 15px;
+   }
+
+
 /* 호버 기능 */
 
 .table-bar{
@@ -144,7 +227,7 @@ table > thead > tr > th:hover {
     transition: 0.5s;
 }
 table > tbody > tr > td{
-    padding: 15px 0;
+    padding: 7px 0;
     transition: 0.5s;
 }
 
@@ -158,4 +241,98 @@ h1{
     left:50%;
     top:30%;
     transform: translateX(-50%);
+}
+.con >.menu-bar > .side-bar {
+    position: absolute;
+    top:0;
+    right: 0;
+    opacity: 0;
+    visibility: hidden;
+    
+
+}
+.con >.menu-bar > .butten:hover + .side-bar {
+    opacity: 1;
+    visibility:visible;
+    transition: 0.5s;
+    outline: 1px solid red;
+    
+}
+
+.con >.menu-bar > .side-bar ul li {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+.con >.menu-bar > .side-bar > ul > li{
+    padding:10px 10px;
+}
+.con >.menu-bar > .side-bar > ul{
+    
+    display: inline-block;
+    flex-direction: column;
+    
+}
+.con >.menu-bar > .side-bar > ul > li{
+    display: flex;
+    position: relative;
+    
+}
+.con >.menu-bar > .side-bar > ul > li > ul > li {
+    padding: 7px 15px;
+}
+.con >.menu-bar > .side-bar > ul > li > ul { 
+    position: absolute;
+    top:0;
+    right:100%;
+    opacity:0;
+    visibility:hidden;
+    transition:opacity 0.5s, visibility 0.5s;
+    color:#1C1B26;
+    background-color: #996ECC;
+    
+}
+
+.con >.menu-bar > .side-bar > ul > li:hover > ul {
+    opacity: 1;
+    visibility:visible;
+    
+}
+.con >.menu-bar > .side-bar > ul > li:hover > a {
+    color:#F9CDCD;
+    transition: 0.5s;
+}
+.con >.menu-bar > .side-bar > ul > li > ul > li:hover {
+    color:#F9CDCD;
+    transition: 0.5s;
+}
+
+.con >.menu-bar > .side-bar > ul  li > a {
+    position: relative;
+}
+.con >.menu-bar > .side-bar > ul  li > a::after {
+    content: "";
+    clear: both;
+    background-color: #F9CDCD ;
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    z-index: 1;
+    width: 0%;
+    height: 2px;
+    transition: all 0.5s;
+}
+.con >.menu-bar > .side-bar > ul  li:hover > a::after {
+    content: "";
+    clear: both;
+    position: absolute;
+    top: 75%;
+    left: 0%;
+    z-index: 1;
+    width: 100%;
+    height: 2px;
+    transition: all 0.5s;
+}
+
+.con > .menu-bar > .side-bar {
+    display: none;
 }

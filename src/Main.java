@@ -767,9 +767,11 @@ class MemberController extends Controller {
 //Service
 class BuildService {
 	ArticleService articleService;
+	MemberService memberService;
 
 	BuildService() {
 		articleService = Factory.getArticleService();
+		memberService = Factory.getMemberService();
 	}
 
 	public void buildSite() {
@@ -780,57 +782,117 @@ class BuildService {
 
 		String head = Util.getFileContents("site_template/part/head.html");
 		String foot = Util.getFileContents("site_template/part/foot.html");
-		
+
+		// resource
 		String commonCss = Util.getFileContents("site_template/resource/common.css");
 		Util.writeFileContents("site/resource/common.css", commonCss);
-		
-		String mainIndex = Util.getFileContents("site_template/home/index.html");
-		Util.writeFileContents("site/home/index.html", mainIndex);
-		
-		String mainIndex2 = Util.getFileContents("site_template/home/index2.html");
-		Util.writeFileContents("site/home/index2.html", mainIndex2);
-		
-		String mainIndexCss = Util.getFileContents("site_template/home/index.css");
-		Util.writeFileContents("site/home/index.css", mainIndexCss);
-		
+
+		// --------------------------------------------------------------------------------------------
+		// part - head게시판 호버 리스트-미구현
+
 		List<Board> boards = articleService.getAllBoard();
-
+		// <!--<li><a href="../article/free-list-1.html">Free</a></li>
+		// <li><a href=\"../article/"+ board.getCode() + "-list-1.html\">" +
+		// board.getCode() + "</a></li> *" + boards
+		String menuHtml = "";
+		
 		for (Board board : boards) {
-
-			head = head.replace("{$boardMenu}", board.getCode() + "-list-1.html");
+			menuHtml += "<li><a href=\"../article/" + board.getCode() + "-list-1.html\">" + board.getCode() + "</a></li>";
 		}
+		
+		head = head.replace("{$boardMenu}", menuHtml);
 
-		// article - 각 게시판 별 게시물리스트 페이지 생성 / notice, free..
+		// --------------------------------------------------------------------------------------------
+		// home - index
+		String index = Util.getFileContents("site_template/home/index.html");
+		Util.writeFileContents("site/home/index.html", index);
+
+		String indexcss = Util.getFileContents("site_template/home/index.css");
+		Util.writeFileContents("site/home/index.css", indexcss);
+
+		// - index2
+		String index2 = Util.getFileContents("site_template/home/index2.html");
+		index2 = head + index2 + foot;
+		Util.writeFileContents("site/home/index2.html", index2);
+
+		// --------------------------------------------------------------------------------------------
+		// article_list - 각 게시판 별 게시물리스트 페이지 생성 / notice, free..
+		String table = Util.getFileContents("site_template/article/table.css");
+		Util.writeFileContents("site/article/table.css", table);
+
+		String detail = Util.getFileContents("site_template/article/detail.css");
+		Util.writeFileContents("site/article/detail.css", detail);
 
 		for (Board board : boards) {
-			String fileName = board.getCode() + "-list-1.html";
-
-			String html = "";
-
 			List<Article> articles = articleService.getArticlesByBoardCode(board.getCode());
+			head = head.replace("<meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\" />",
+					"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>");
+
+			String fileName = board.getCode() + "-list-1.html";
+			String html = "";
+			html += "<link rel=\"stylesheet\" href=\"table.css\" />";
+			html += " <div class=\"board-bar\">\r\n" + 
+					"<div class=\"board-name\">\r\n" + 
+					"<a href=\"#\">" + board.getName() + " 게시판</a>\r\n" + 
+					"</div>\r\n" + "<div class=\"table\">\r\n" + 
+					"<table border=\"1\">\r\n" + 
+					"<thead>\r\n" + 
+					"<tr>\r\n" + 
+					"<th><a href=\"#\">번호</a></th>\r\n" + 
+					"<th><a href=\"#\">제목</a></th>\r\n" + 
+					"<th><a href=\"#\">작성자</a></th>\r\n" + 
+					"<th><a href=\"#\">게시날짜</a></th>\r\n" + 
+					"</tr>\r\n" + 
+					"</thead>";
 
 			for (Article article : articles) {
-				html += "<link rel=\"stylesheet\" href=\"listTable.css\" />";
-				html += "<div><a href=\"" + article.getId() + ".html\">게시물 번호 : " + article.getId() + ", 게시물 제목 : "
-						+ article.getTitle() + "</a></div>";
+				Member member = memberService.getMember(article.getMemberId());
+
+				html += "<tbody calss=\"articles\">";
+				html += "<tr>";
+				html += "<td><a href=\"#\">" + article.getId() + "</a></td>";
+				html += "<td><a href=\"" + article.getId() + ".html\">" + article.getTitle() + "</a></td>";
+				html += "<td><a href=\"#\">" + member.getName() + "</a></td>";
+				html += "<td><a href=\"#\">" + article.getRegDate() + "</a></td>";
+				html += "</tr>";
+				html += "</tbody>";
 			}
+
+			html += "</table>";
 
 			html = head + html + foot;
 
 			Util.writeFileContents("site/article/" + fileName, html);
 		}
 
-		// article - 게시물 별 파일 생성 / 1.html,2.html..
+		// --------------------------------------------------------------------------------------------
+		// article_detail - 게시물 별 파일 생성 / 1.html,2.html..
 		List<Article> articles = articleService.getArticles();
+		// List<Member> members = memberService.getMember(1);
 
 		for (Article article : articles) {
-			String html = "";
+			Member member = memberService.getMember(article.getMemberId());
 
-			html += "<link rel=\"stylesheet\" href=\"listTable.css\" />";
-			html += "<div>제목 : " + article.getTitle() + "</div>";
-			html += "<div>내용 : " + article.getBody() + "</div>";
-			html += "<div><a href=\"" + (article.getId() - 1) + ".html\">이전글</a></div>";
-			html += "<div><a href=\"" + (article.getId() + 1) + ".html\">다음글</a></div>";
+			head = head.replace("<meta http-equiv=\"X-UA-Compatible\" content=\"ie=edge\" />",
+					"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js\"></script>");
+			String html = "";
+			html += "<link rel=\"stylesheet\" href=\"detail.css\" />";
+			html += "<nav class=\"ca\">\r\n" + "<nav class = \"article-box\">\r\n";
+
+			html += "<ul class=\"article-list\">\r\n" + 
+					"<li><a href=\"#\">제목 : " + article.getTitle() + 
+					"</a></li>\r\n" + 
+					"<li><a href=\"#\">작성자 : " + member.getName() + 
+					"</a></li>\r\n" + 
+					"<li><a href=\"#\">게시날짜 : " + article.getRegDate() + 
+					"</a></li>\r\n" + 
+					"</ul>\r\n" +
+					"<div class=\"article-body\">\r\n" + article.getBody() + "</div>\r\n";
+
+			html += "<div class=\"icon\">\r\n" + 
+					"<a href=\"" + (article.getId() - 1) + ".html\"> <i class=\"fas fa-arrow-left\"></i></a> \r\n" + 
+					"<a href=\"" + (article.getId() + 1) + ".html\"> <i class=\"fas fa-arrow-right\"></i></a>\r\n" + 
+					"</nav>\r\n" + " </nav>\r\n" + "</div>";
 
 			html = head + html + foot;
 
@@ -957,6 +1019,10 @@ class MemberService {
 	public Member getMember(int id) {
 		return memberDao.getMember(id);
 	}
+
+	public List<Member> getMembers() {
+		return memberDao.getMembers();
+	}
 }
 
 // Dao
@@ -1056,6 +1122,10 @@ class MemberDao {
 
 	public Member getMember(int id) {
 		return db.getMember(id);
+	}
+
+	public List<Member> getMembers() {
+		return db.getMembers();
 	}
 
 	// 회원가입
